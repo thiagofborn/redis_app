@@ -90,16 +90,15 @@ def add_user():
             db.commit()
             # Invalidate cache for this user
             redis_client.delete(f'user:{username}')
-            return redirect(url_for('index'))  # Redirect to index page
+            message = f"User '{username}' added successfully." #set the message
         except IntegrityError:
             db.rollback()  # Rollback the transaction
             message = f"Error: User with username '{username}' already exists."
-            return render_template('add_user.html', message=message)
         finally:
             db.close()
     else:
         message = "Please provide both username and email."
-        return render_template('add_user.html', message=message)
+    return redirect(url_for('index', message=message)) #redirect to index and pass the message
 
 @app.route('/user/<username>')
 def get_user_data(username):
@@ -118,7 +117,7 @@ def get_user_data(username):
         db_lookup_time = time.time() - db_start_time
         if user:
             user_data = f"ID: {user.id}, Email: {user.email}"
-            redis_client.setex(f'user:{username}', 30, user_data)
+            redis_client.setex(f'user:{username}', 30, user_data)  # Cache for 30 seconds
             retrieval_method = 'database'
             retrieval_time = round(db_lookup_time * 1000, 2)
         else:
