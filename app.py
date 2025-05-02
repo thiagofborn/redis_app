@@ -98,7 +98,7 @@ def add_user():
             db.close()
     else:
         message = "Please provide both username and email."
-    return redirect(url_for('index', message=message)) #redirect to index and pass the message
+    return render_template('index.html', message=message) #redirect to index and pass the message
 
 @app.route('/user/<username>')
 def get_user_data(username):
