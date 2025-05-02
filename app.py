@@ -38,8 +38,12 @@ def get_db():
     finally:
         db.close()
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/find_user', methods=['GET', 'POST'])
+def find_user():
     message = ""
     cache_hit = False
     cache_time = None
@@ -75,30 +79,33 @@ def index():
         else:
             message = "Please enter a username."
 
-    return render_template('index.html', message=message, cache_hit=cache_hit,
+    return render_template('find_user.html', message=message, cache_hit=cache_hit,
                            cache_time=cache_time, db_time=db_time, retrieval_time=retrieval_time)
 
-@app.route('/add_user', methods=['POST'])
+@app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
-    username = request.form.get('new_username')
-    email = request.form.get('new_email')
-    if username and email:
-        db = next(get_db())
-        try:
-            new_user = User(username=username, email=email)
-            db.add(new_user)
-            db.commit()
-            # Invalidate cache for this user
-            redis_client.delete(f'user:{username}')
-            message = f"User '{username}' added successfully." #set the message
-        except IntegrityError:
-            db.rollback()  # Rollback the transaction
-            message = f"Error: User with username '{username}' already exists."
-        finally:
-            db.close()
-    else:
-        message = "Please provide both username and email."
-    return render_template('index.html', message=message) #redirect to index and pass the message
+    message = ""
+    if request.method == 'POST':
+        username = request.form.get('new_username')
+        email = request.form.get('new_email')
+        if username and email:
+            db = next(get_db())
+            try:
+                new_user = User(username=username, email=email)
+                db.add(new_user)
+                db.commit()
+                # Invalidate cache for this user
+                redis_client.delete(f'user:{username}')
+                message = f"User '{username}' added successfully."
+                return redirect(url_for('find_user')) #redirect to the find user page
+            except IntegrityError:
+                db.rollback()  # Rollback the transaction
+                message = f"Error: User with username '{username}' already exists."
+            finally:
+                db.close()
+        else:
+            message = "Please provide both username and email."
+    return render_template('add_user.html', message=message)
 
 @app.route('/user/<username>')
 def get_user_data(username):

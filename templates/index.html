@@ -1,35 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Redis Cache Example</title>
+    <title>User Management</title>
 </head>
 <body>
-    <h1>Find User</h1>
-    <form method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
-        <button type="submit">Find User</button>
-    </form>
-    {% if message %}
-    <p>{{ message }}</p>
-    {% endif %}
-
-    {% if cache_hit %}
-    <p>Cache Hit!</p>
-    <p>Retrieved from cache at: {{ retrieval_time }}</p>
-    <p>Cache lookup time: {{ cache_time }} ms</p>
-    {% elif db_time is not none %}
-    <p>Cache Miss - Retrieved from database at: {{ retrieval_time }}</p>
-    <p>Database lookup time: {{ db_time }} ms</p>
-    {% endif %}
-
-    <h2>Add New User</h2>
-    <form method="POST" action="/add_user">
-        <label for="new_username">Username:</label>
-        <input type="text" id="new_username" name="new_username" required><br><br>
-        <label for="new_email">Email:</label>
-        <input type="email" id="new_email" name="new_email" required><br><br>
-        <button type="submit">Add User</button>
-    </form>
+    <h1>Welcome to User Management</h1>
+    <p><a href="{{ url_for('add_user') }}">Add User</a></p>
+    <p><a href="{{ url_for('find_user') }}">Find User</a></p>
 </body>
 </html>
