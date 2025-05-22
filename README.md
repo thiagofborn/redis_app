@@ -391,3 +391,22 @@ Redis Enterprise:
 | **Redis Enterprise Cloud** | N/A                       | 99.999% (for Business Critical tier)  |
 
 ---
+
+## Start redis/valkey using brew mac 
+
+```shell
+brew services start redis
+```
+
+## Observations
+
+Once the key is added to redis/valkey the value receives a TTL. This TTL value does not change until it expires.
+Exemple:
+user1 is create and receives 20 TTL.
+user1 has hit in the first passed second.  19 TTL
+user1 has another hit in the fifth second. 15 TTL
+
+In other words, the TTL does not change because the user was retrieved from redis/valkey.
+
+##
+

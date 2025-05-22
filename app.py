@@ -15,6 +15,9 @@ REDIS_PORT = 6379
 REDIS_DB = 0
 redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
+USER_TTL_SECONDS = 3000  # e.g. 5 minutes
+
+
 # Database Configuration (SQLite for simplicity)
 DATABASE_URL = 'sqlite:///./database.db'
 engine = create_engine(DATABASE_URL)
@@ -124,10 +127,10 @@ def get_user_data(username):
         db_lookup_time = time.time() - db_start_time
         if user:
             user_data = f"ID: {user.id}, Email: {user.email}"
-            redis_client.setex(f'user:{username}', 30, user_data)  # Cache for 30 seconds
+            redis_client.setex(f'user:{username}', 600, user_data)  # Cache for 30 seconds
             retrieval_method = 'database'
             retrieval_time = round(db_lookup_time * 1000, 2)
-        else:
+        else:         
             return jsonify({'error': 'User not found'}), 404
     return jsonify({
         'username': username,

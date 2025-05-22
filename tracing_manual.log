@@ -1,0 +1,15 @@
+Retrieved from cache: User data for user1 - ID: 1, Email: user1@mail
+
+Cache Hit!
+
+Retrieved from cache at: 2025-05-17 14:54:49
+
+Cache lookup time: 0.34 ms
+___________________________
+
+5 min 
+USER_TTL_SECONDS = 300  # e.g. 5 minutes
+
+___________________________
+14:59:49
+ 

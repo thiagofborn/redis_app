@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redis TTL Monitor</title>
+  <script>
+    function fetchTTLs() {
+      fetch('/api/ttls')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.getElementById('ttl-table-body');
+          tableBody.innerHTML = '';
+          for (const [key, ttl] of Object.entries(data)) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${key}</td><td>${ttl}</td>`;
+            tableBody.appendChild(row);
+          }
+        });
+    }
+
+    setInterval(fetchTTLs, 2000);  // Refresh every 2 seconds
+    window.onload = fetchTTLs;
+  </script>
+</head>
+<body>
+  <h2>Redis Key TTL Monitor</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Time to Live (seconds)</th>
+      </tr>
+    </thead>
+    <tbody id="ttl-table-body">
+      <!-- Content populated by JS -->
+    </tbody>
+  </table>
+</body>
+</html>
